@@ -1,15 +1,19 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, NavLink } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, NavLink, useLocation } from 'react-router-dom';
 import { Activity, Apple, Calendar, Utensils, Sparkles } from 'lucide-react';
+import Landing from './pages/Landing';
 import Dashboard from './pages/Dashboard';
 import Recommendations from './pages/Recommendations';
 import NutritionCalculator from './pages/NutritionCalculator';
 import DietPlanner from './pages/DietPlanner';
 
-function App() {
+const AppContent = () => {
+  const location = useLocation();
+  const isLanding = location.pathname === '/';
+
   return (
-    <Router>
-      <div className="app-container">
+    <div className="app-container" style={{ padding: isLanding ? '0' : '' }}>
+      {!isLanding && (
         <nav className="navbar">
           <div className="nav-brand" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '3rem', paddingLeft: '0.5rem' }}>
             <div style={{ background: 'linear-gradient(135deg, #3a7bd5, #00d2ff)', padding: '0.5rem', borderRadius: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 15px rgba(58, 123, 213, 0.4)' }}>
@@ -20,7 +24,7 @@ function App() {
             </span>
           </div>
           <div className="nav-links">
-            <NavLink to="/" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"} end>
+            <NavLink to="/dashboard" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
               <Activity size={22} />
               <span>Dashboard</span>
             </NavLink>
@@ -38,16 +42,25 @@ function App() {
             </NavLink>
           </div>
         </nav>
-        
-        <main className="main-content">
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/recommendations" element={<Recommendations />} />
-            <Route path="/calculator" element={<NutritionCalculator />} />
-            <Route path="/planner" element={<DietPlanner />} />
-          </Routes>
-        </main>
-      </div>
+      )}
+      
+      <main className="main-content" style={{ padding: isLanding ? '0' : '3rem', maxWidth: isLanding ? '100%' : '1400px', display: isLanding ? 'flex' : 'block', flexDirection: 'column' }}>
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/recommendations" element={<Recommendations />} />
+          <Route path="/calculator" element={<NutritionCalculator />} />
+          <Route path="/planner" element={<DietPlanner />} />
+        </Routes>
+      </main>
+    </div>
+  );
+};
+
+function App() {
+  return (
+    <Router>
+      <AppContent />
     </Router>
   );
 }
